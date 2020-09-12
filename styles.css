@@ -26,8 +26,6 @@ html {
     display: inline-block;
     width: 200px;
     height: 200px;
-    #border: 1.25px solid #ababab;
-    #border-radius: 50%;
   
     background-repeat: no-repeat;
     background-position: center center;
