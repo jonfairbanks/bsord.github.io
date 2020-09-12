@@ -1,0 +1,96 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-177847574-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-177847574-1');
+    </script>
+    <script
+      src="https://kit.fontawesome.com/57cf97061f.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap"
+      rel="stylesheet"
+    />
+    <link href="styles.css" rel="stylesheet" />
+    <title>Brandon Sorgdrager</title>
+  </head>
+  <body>
+    <div id="outer">
+      <div id="inner">
+        <div class="box">
+          <div id="outer">
+            <div id="inner">
+              <div class="user-circle user-img"></div>
+            </div>
+          </div>
+          <h1>Brandon S.</h1>
+
+          <span class="caption">Developer and Systems Engineer</span>
+
+          <table style="color: #eee">
+            <tr>
+              <td>
+                <a
+                  href="https://github.com/bsord"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div class="tooltip">
+                    <i class="fab fa-2x fa-github github"></i>
+                    <span class="tooltiptext">GitHub</span>
+                  </div>
+                </a>
+              </td>
+              <td>
+                <a
+                  href="https://www.linkedin.com/in/brandon-sorgdrager"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div class="tooltip">
+                    <i class="fab fa-2x fa-linkedin"></i>
+                    <span class="tooltiptext">LinkedIn</span>
+                  </div>
+                </a>
+              </td>
+              <td>
+                <a
+                  href="https://hub.docker.com/r/bsord"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <div class="tooltip">
+                    <i class="fab fa-2x fa-docker"></i>
+                    <span class="tooltiptext">Docker Hub</span>
+                  </div>
+                </a>
+              </td>
+              <td>
+                <a href="javascript:decryptEmail('YnJhbmRvbi5zb3JnZHJhZ2VyQGdtYWlsLmNvbQ==');">
+                  <div class="tooltip">
+                    <i class="fas fa-2x fa-envelope"></i>
+                    <span class="tooltiptext">Email</span>
+                  </div>
+                </a>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+<script>
+  function decryptEmail(encoded) {
+    var address = atob(encoded);
+    window.location.href = "mailto:" + address;
+  }
+</script>
