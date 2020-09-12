@@ -76,7 +76,7 @@ html {
   }
   .tooltip:hover .tooltiptext {
     visibility: visible;
-    transition-delay: 1.5s;
+    transition-delay: .75s;
   }
   .fa-github:hover {
     color: #5e539c;
