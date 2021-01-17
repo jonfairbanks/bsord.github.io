@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "pretty-default-backend.fullname" . }}
+  name: {{ include "bsord-homepage.fullname" . }}
   labels:
-    {{- include "pretty-default-backend.labels" . | nindent 4 }}
+    {{- include "bsord-homepage.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "pretty-default-backend.selectorLabels" . | nindent 6 }}
+      {{- include "bsord-homepage.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "pretty-default-backend.selectorLabels" . | nindent 8 }}
+        {{- include "bsord-homepage.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "pretty-default-backend.serviceAccountName" . }}
+      serviceAccountName: {{ include "bsord-homepage.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

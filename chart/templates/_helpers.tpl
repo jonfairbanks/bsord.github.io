@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "pretty-default-backend.name" -}}
+{{- define "bsord-homepage.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "pretty-default-backend.fullname" -}}
+{{- define "bsord-homepage.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "pretty-default-backend.chart" -}}
+{{- define "bsord-homepage.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "pretty-default-backend.labels" -}}
-helm.sh/chart: {{ include "pretty-default-backend.chart" . }}
-{{ include "pretty-default-backend.selectorLabels" . }}
+{{- define "bsord-homepage.labels" -}}
+helm.sh/chart: {{ include "bsord-homepage.chart" . }}
+{{ include "bsord-homepage.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,17 +46,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "pretty-default-backend.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "pretty-default-backend.name" . }}
+{{- define "bsord-homepage.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "bsord-homepage.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "pretty-default-backend.serviceAccountName" -}}
+{{- define "bsord-homepage.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "pretty-default-backend.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "bsord-homepage.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
