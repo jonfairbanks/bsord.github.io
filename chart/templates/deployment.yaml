@@ -4,6 +4,8 @@ metadata:
   name: {{ include "bsord-homepage.fullname" . }}
   labels:
     {{- include "bsord-homepage.labels" . | nindent 4 }}
+  annotations:
+    {{- include "bsord-homepage.annotations" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
