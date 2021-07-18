@@ -13,10 +13,12 @@ spec:
       {{- include "bsord-homepage.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
       labels:
         {{- include "bsord-homepage.selectorLabels" . | nindent 8 }}
-      annotations:
-        {{- toYaml .Values.annotations | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
