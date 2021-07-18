@@ -8,6 +8,8 @@ image:
   repository: bsord/bsord-homepage
   pullPolicy: Always
 
+annotations: {}
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
