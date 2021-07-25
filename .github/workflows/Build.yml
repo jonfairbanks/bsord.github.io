@@ -1,83 +1,73 @@
-name: Build and Publish
+name: "Build and Publish"
+# SECRETS NEEDED:
+# DOCKER_USERNAME - Container Registry Username (github or dockerhub)
+# DOCKER_ACCESS_TOKEN - Container registry Personal access token with push priveledges
+# CM_API_KEY - ChartMuseum API Key with permission to push
+# CM_REPO_URL - ChartMusuem REPO URL in the format: 'https://h.cfcr.io/bsord/charts'
 
 on:
   push:
-    # Publish `master` as Docker `latest` image.
     branches:
-      - master
-
-    # Publish `v1.2.3` tags as releases.
-    tags:
-      - v*
-
-  # Run tests for any PRs.
-  pull_request:
-
-env:
-  # TODO: Change variable to your image's name.
-  IMAGE_NAME: bsord/bsord-homepage
+      - "master"
 
 jobs:
-  # Run tests.
-  # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  test:
+  release:
+    name: "Release"
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Run tests
-        run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi
-  push:
-    # Ensure test job passes before pushing image.
-    needs: test
-
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
-
-      - name: Log into GitHub Container Registry
-      # TODO: Create a PAT with `read:packages` and `write:packages` scopes and save it as an Actions secret `CR_PAT`
-        run: echo "${{ secrets.CR_PAT }}" | docker login -u ${{ secrets.CR_USERNAME }} --password-stdin
-
-      - name: Push image to GitHub Container Registry
-        run: |
-          IMAGE_ID=$IMAGE_NAME
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "master" ] && VERSION=latest
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION
-  
-  push-helm-chart:
-    needs: push
-    runs-on: ubuntu-latest
-    name: Push helm chart to CodeFresh repo
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Push Helm Chart
-        uses: bsord/helm-push@v1
+      - name: Checkout source code
+        uses: "actions/checkout@v2"
         with:
-          access-token: ${{ secrets.CF_API_KEY }}
-          repository-url: 'https://h.cfcr.io/bsord/charts'
+          ref: ${{ github.ref }}
+
+      - name: Get next version
+        id: get-next-version
+        uses: bsord/conventional-changelog-action@v3.7.0
+        with:
+          github-token: ${{ secrets.github_token }}
+          tag-prefix: ''
+          skip-version-file: true
+          dry-run: true
+
+      - name: Update version in version files
+        if: ${{ steps.get-next-version.outputs.skipped == 'false' }}
+        run: |
+          sed -r -i 's/(\"version\":[^*]\")([[:alnum:].]*)/\1${{ steps.get-next-version.outputs.version }}/g' package.json
+          sed -r -i 's/(version:[^*]|appVersion:[^*])([[:alnum:].]*)/\1${{ steps.get-next-version.outputs.version }}/g' ./chart/Chart.yaml
+
+      - name: Commit changes
+        if: ${{ steps.get-next-version.outputs.skipped == 'false' }}
+        uses: EndBug/add-and-commit@v5
+        with:
+          message: "chore(version): Bump to: ${{ steps.get-next-version.outputs.version }}"
+          tag: "${{ steps.get-version.outputs.version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Create Release
+        if: ${{ steps.get-next-version.outputs.skipped == 'false' }}
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        with:
+          tag_name: ${{ steps.get-next-version.outputs.version }}
+          release_name: ${{ steps.get-next-version.outputs.version }}
+          body: ${{ steps.get-next-version.outputs.clean_changelog }}
+
+      - name: Build and publish Docker image
+        if: ${{ steps.get-next-version.outputs.skipped == 'false' }}
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: ${{ github.repository }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
+          tags: "latest,${{ steps.get-next-version.outputs.version }}"
+
+      - name: Push Helm chart
+        if: ${{ steps.get-next-version.outputs.skipped == 'false' }}
+        uses: bsord/helm-push@v3
+        with:
+          access-token: ${{ secrets.CM_API_KEY }}
+          repository-url: ${{ secrets.CM_REPO_URL }} 
           force: true
           chart-folder: chart
