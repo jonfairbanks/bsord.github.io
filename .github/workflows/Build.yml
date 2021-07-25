@@ -1,7 +1,7 @@
 name: "Build and Publish"
 # SECRETS NEEDED:
-# DOCKER_USERNAME - Container Registry Username (github or dockerhub)
-# DOCKER_ACCESS_TOKEN - Container registry Personal access token with push priveledges
+# CR_USERNAME - Container Registry Username (github or dockerhub)
+# CR_ACCESS_TOKEN - Container registry Personal access token with push priveledges
 # CM_API_KEY - ChartMuseum API Key with permission to push
 # CM_REPO_URL - ChartMusuem REPO URL in the format: 'https://h.cfcr.io/bsord/charts'
 
