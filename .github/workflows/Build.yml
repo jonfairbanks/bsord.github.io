@@ -2,7 +2,7 @@ name: "Build and Publish"
 # SECRETS NEEDED:
 # CR_USERNAME - Container Registry Username (github or dockerhub)
 # CR_ACCESS_TOKEN - Container registry Personal access token with push priveledges
-# CM_API_KEY - ChartMuseum API Key with permission to push
+# CF_API_KEY - ChartMuseum API Key with permission to push
 # CM_REPO_URL - ChartMusuem REPO URL in the format: 'https://h.cfcr.io/bsord/charts'
 
 on:
@@ -67,7 +67,7 @@ jobs:
         if: ${{ steps.get-next-version.outputs.skipped == 'false' }}
         uses: bsord/helm-push@v3
         with:
-          access-token: ${{ secrets.CM_API_KEY }}
+          access-token: ${{ secrets.CF_API_KEY }}
           repository-url: ${{ secrets.CM_REPO_URL }} 
           force: true
           chart-folder: chart
