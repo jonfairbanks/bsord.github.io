@@ -58,7 +58,7 @@ jobs:
         if: ${{ steps.get-next-version.outputs.skipped == 'false' }}
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: "bsord-homepage"
+          name: "bsord/bsord-homepage"
           username: ${{ secrets.CR_USERNAME }}
           password: ${{ secrets.CR_PAT }}
           tags: "latest,${{ steps.get-next-version.outputs.version }}"
