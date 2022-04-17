@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+.git
+.gitignore
+.gitattributes
+.cache
+*.md
+*.example
+LICENSE
+*.sample
+.env*
+.prettier*
+chart/
+Dockerfile
